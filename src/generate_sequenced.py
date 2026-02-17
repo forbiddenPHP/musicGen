@@ -13,7 +13,7 @@ import torch
 _project_root = Path(__file__).resolve().parent
 sys.path.insert(0, str(_project_root / "3rd-party"))
 
-from generate import get_device, load_model
+from generate import get_device, load_model, apply_fade
 
 
 def generate_sequenced(prompt: str, duration: float, model_name: str,
@@ -54,6 +54,7 @@ def generate_sequenced(prompt: str, duration: float, model_name: str,
         audio = audio_tensor[0].cpu().numpy()
         if audio.ndim == 2:
             audio = audio.T
+        apply_fade(audio, model.sample_rate)
 
         filepath = out / f"musicgen_{timestamp}_sequenced_{sec:02d}s.wav"
         sf.write(str(filepath), audio, samplerate=model.sample_rate)

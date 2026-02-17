@@ -14,7 +14,7 @@ import torch
 import soundfile as sf
 from flask import Flask, request, send_file, jsonify
 
-from generate import get_device, load_model
+from generate import get_device, load_model, apply_fade
 
 app = Flask(__name__)
 
@@ -126,7 +126,7 @@ form.addEventListener('submit', async (e) => {
 function addHistory(prompt, filename) {
   const div = document.createElement('div');
   div.className = 'hist-item';
-  div.textContent = prompt;
+  div.textContent = filename + ' — ' + prompt;
   div.addEventListener('click', () => {
     audio.src = '/musicGen/output/' + filename;
     player.style.display = 'block';
@@ -170,6 +170,7 @@ def generate():
     audio_data = wav[0].cpu().numpy()
     if audio_data.ndim == 2:
         audio_data = audio_data.T
+    apply_fade(audio_data, model.sample_rate)
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"musicgen_{timestamp}.wav"

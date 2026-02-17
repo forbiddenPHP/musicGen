@@ -11,9 +11,37 @@ from pathlib import Path
 _project_root = Path(__file__).resolve().parent
 sys.path.insert(0, str(_project_root / "3rd-party"))
 
+import numpy as np
 import soundfile as sf
 import torch
 from audiocraft.models import MusicGen
+
+FADE_DURATION = 0.5  # seconds
+
+
+def apply_fade(audio: np.ndarray, sample_rate: int) -> np.ndarray:
+    """Apply linear fade-in and fade-out (0.5s each) to audio.
+
+    Args:
+        audio: numpy array, shape (samples,) or (samples, channels).
+        sample_rate: audio sample rate in Hz.
+    Returns:
+        Audio with fades applied (in-place).
+    """
+    fade_samples = int(FADE_DURATION * sample_rate)
+    if fade_samples == 0 or len(audio) < fade_samples * 2:
+        return audio
+
+    fade_in = np.linspace(0.0, 1.0, fade_samples, dtype=np.float32)
+    fade_out = np.linspace(1.0, 0.0, fade_samples, dtype=np.float32)
+
+    if audio.ndim == 2:
+        fade_in = fade_in[:, np.newaxis]
+        fade_out = fade_out[:, np.newaxis]
+
+    audio[:fade_samples] *= fade_in
+    audio[-fade_samples:] *= fade_out
+    return audio
 
 
 def get_device(force_device: str | None = None):
@@ -74,6 +102,7 @@ def generate(prompt: str, duration: float, model_name: str, output_dir: str, for
     audio = wav[0].cpu().numpy()
     if audio.ndim == 2:
         audio = audio.T  # (samples, channels) for soundfile
+    apply_fade(audio, model.sample_rate)
 
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

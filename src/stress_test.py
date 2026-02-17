@@ -16,6 +16,7 @@ OUTPUT_DIR = _project_root.parent / "output"
 
 import torch
 from audiocraft.models import MusicGen
+from generate import apply_fade
 
 DEFAULT_PROMPT = "upbeat pop song with catchy melody and drums"
 MODEL_NAME = "facebook/musicgen-large"
@@ -69,6 +70,7 @@ def main():
             audio = wav[0].cpu().numpy()
             if audio.ndim == 2:
                 audio = audio.T
+            apply_fade(audio, model.sample_rate)
             filepath = OUTPUT_DIR / f"stresstest_{duration:02d}s.wav"
             sf.write(str(filepath), audio, samplerate=model.sample_rate)
 
