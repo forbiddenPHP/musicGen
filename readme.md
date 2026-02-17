@@ -48,6 +48,23 @@ Options:
 - `--prompts` — path to prompts file (default: `src/prompts.txt`)
 - `--duration`, `--model`, `--output` — same as above
 
+### Sequenced generation
+
+```console
+./generate_sequenced.sh --prompt "90s TV jingle, bright synth melody" --duration 10
+```
+
+Generates a single piece of music and saves cumulative per-second snapshots. The same audio, growing from 1 second to the full duration:
+
+```
+output/musicgen_20260217_192045_sequenced_01s.wav   (first second)
+output/musicgen_20260217_192045_sequenced_02s.wav   (first two seconds)
+...
+output/musicgen_20260217_192045_sequenced_10s.wav   (full piece)
+```
+
+Options: same as single generation (`--prompt`, `--duration`, `--model`, `--output`, `--device`).
+
 ### Web interface
 
 ```console
@@ -69,6 +86,7 @@ output/musicgen_20260217_180735.wav
 ```
 ├── setup.sh                 # Creates Conda env + installs dependencies
 ├── generate.sh              # Shell wrapper (handles Conda activation)
+├── generate_sequenced.sh    # Shell wrapper for sequenced generation
 ├── batch_generate.sh        # Shell wrapper for batch mode
 ├── web.sh                   # Web server (--start/--stop, runs in background)
 ├── stress_test.sh           # Shell wrapper for stress test
@@ -76,6 +94,7 @@ output/musicgen_20260217_180735.wav
 ├── sources.md
 ├── src/
 │   ├── generate.py          # Generation script
+│   ├── generate_sequenced.py # Sequenced generation (per-second snapshots)
 │   ├── batch_generate.py    # Batch generation script
 │   ├── web.py               # Flask web app (persistent model)
 │   ├── stress_test.py       # Memory stress test (1s..30s)
