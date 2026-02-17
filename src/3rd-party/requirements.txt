@@ -1,0 +1,28 @@
+# audiocraft dependencies (installed BEFORE audiocraft --no-deps)
+# PyTorch is installed separately via setup.sh (MPS build, no CUDA)
+av==16.1.0
+einops==0.8.2
+encodec==0.1.1
+flashy==0.0.2
+huggingface-hub==1.4.1
+julius==0.2.7
+librosa==0.11.0
+num2words==0.5.14
+omegaconf==2.3.0
+protobuf==6.33.5
+safetensors==0.7.0
+scipy==1.17.0
+sentencepiece==0.2.1
+soundfile==0.13.1
+tokenizers==0.22.2
+transformers==5.2.0
+torchdiffeq==0.2.5
+torchmetrics==1.8.2
+dora-search==0.1.12
+cloudpickle==3.1.2
+colorlog==6.10.1
+treetable==0.2.6
+submitit==1.5.4
+antlr4-python3-runtime==4.9.3
+retrying==1.4.2
+flask==3.1.2
